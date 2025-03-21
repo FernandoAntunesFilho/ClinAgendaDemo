@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ClinAgendaDemo.src.WebAPI.Controllers
 {
+    [ApiController]
+    [Route("api/patient")]
     public class PatientController : ControllerBase
     {
         private readonly PatientUseCase _patientUseCase;
