@@ -25,5 +25,10 @@ namespace ClinAgendaDemo.src.Application.UseCases
         {
             return await _patientRepository.GetByIdAsync(id);
         }
+
+        public async Task<int> CreatePatient(PatientInsertDTO request)
+        {
+            return await _patientRepository.InsertPatientAsync(request);
+        }
     }
 }

@@ -106,5 +106,15 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
 
             return patient;
         }
+
+        public async Task<int> InsertPatientAsync(PatientInsertDTO request)
+        {
+            string query = @"
+                INSERT INTO PATIENT (NAME, PHONENUMBER, DOCUMENTNUMBER, STATUSID, BIRTHDATE)
+                VALUES (@Name, @PhoneNumber, @DocumentNumber, @StatusId, @BirthDate);
+                SELECT LAST_INSERT_ID();";
+            
+            return await _connection.ExecuteScalarAsync<int>(query, request);
+        }
     }
 }
