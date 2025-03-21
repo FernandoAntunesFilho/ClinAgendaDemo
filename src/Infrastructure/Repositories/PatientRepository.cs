@@ -75,20 +75,36 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
 
         public async Task<PatientListDTO> GetByIdAsync(int id)
         {
-            const string query = @"
+            var parameters = new DynamicParameters();
+            parameters.Add("id", id);
+
+            var query = $@"
                 SELECT
-                    id,
-                    name,
-                    phoneNumber,
-                    documentNumber,
-                    statusId,
-                    birthDate
-                    FROM patient;
-                WHERE ID = @Id";
+                    p.id,
+                    p.name,
+                    p.phoneNumber,
+                    p.documentNumber,
+                    p.statusId,
+                    p.birthDate,
+                    s.id,
+                    s.name 
+                    FROM patient p
+                INNER JOIN status s
+                ON p.statusId = s.id
+                where p.id = @id";
 
-            var patients = await _connection.QueryFirstOrDefaultAsync<PatientListDTO>(query, new { Id = id });
+            var patient = (await _connection.QueryAsync<PatientListDTO, StatusDTO, PatientListDTO>(
+                query,
+                (patient, status) =>
+                {
+                    patient.Status = status;
+                    return patient;
+                },
+                parameters,
+                splitOn: "id"
+            )).FirstOrDefault();
 
-            return patients; //TODO: Continuar a implementar aqui.
+            return patient;
         }
     }
 }

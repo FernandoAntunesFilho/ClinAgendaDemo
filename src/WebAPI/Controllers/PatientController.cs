@@ -19,12 +19,26 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
         }
 
         [HttpPost("list")]
-        public async Task<IActionResult> GetSpecialtyAsync([FromBody] PatientRequestDTO request)
+        public async Task<IActionResult> GetPatientAsync([FromBody] PatientRequestDTO request)
         {
             try
             {
                 var patients = await _patientUseCase.GetPatientsAsync(request);
                 return Ok(patients);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
+
+        [HttpGet("list/{id}")]
+        public async Task<IActionResult> GetPatientsByIdAsync(int id)
+        {
+            try
+            {
+                var patient = await _patientUseCase.GetPetientById(id);
+                return Ok(patient);
             }
             catch (Exception ex)
             {

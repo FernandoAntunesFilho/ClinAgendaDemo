@@ -18,9 +18,12 @@ namespace ClinAgendaDemo.src.Application.UseCases
 
         public async Task<object> GetPatientsAsync(PatientRequestDTO request)
         {
-            return await _patientRepository.GetAllAsync(request);
+            return await _patientRepository.GetAllAsync(request);            
+        }
 
-            
+        public async Task<PatientListDTO> GetPetientById(int id)
+        {
+            return await _patientRepository.GetByIdAsync(id);
         }
     }
 }
