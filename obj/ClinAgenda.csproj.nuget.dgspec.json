@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/maira/Projects/Demo/ClinAgenda/ClinAgenda.csproj": {}
+    "c:\\Users\\ferna\\OneDrive\\Documentos\\Projetos\\Pecege\\ClinAgendaDemo\\ClinAgenda.csproj": {}
   },
   "projects": {
-    "/Users/maira/Projects/Demo/ClinAgenda/ClinAgenda.csproj": {
+    "c:\\Users\\ferna\\OneDrive\\Documentos\\Projetos\\Pecege\\ClinAgendaDemo\\ClinAgenda.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/maira/Projects/Demo/ClinAgenda/ClinAgenda.csproj",
+        "projectUniqueName": "c:\\Users\\ferna\\OneDrive\\Documentos\\Projetos\\Pecege\\ClinAgendaDemo\\ClinAgenda.csproj",
         "projectName": "ClinAgenda",
-        "projectPath": "/Users/maira/Projects/Demo/ClinAgenda/ClinAgenda.csproj",
-        "packagesPath": "/Users/maira/.nuget/packages/",
-        "outputPath": "/Users/maira/Projects/Demo/ClinAgenda/obj/",
+        "projectPath": "c:\\Users\\ferna\\OneDrive\\Documentos\\Projetos\\Pecege\\ClinAgendaDemo\\ClinAgenda.csproj",
+        "packagesPath": "C:\\Users\\ferna\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\ferna\\OneDrive\\Documentos\\Projetos\\Pecege\\ClinAgendaDemo\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/maira/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\ferna\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -79,7 +79,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.405/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.405/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
