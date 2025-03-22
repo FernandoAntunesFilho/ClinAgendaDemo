@@ -69,7 +69,7 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
             return patients;
         }
 
-        public async Task<PatientListDTO> GetByIdAsync(int id)
+        public async Task<PatientListDTO?> GetByIdAsync(int id)
         {
             var parameters = new DynamicParameters();
             parameters.Add("id", id);
