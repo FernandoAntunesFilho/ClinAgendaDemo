@@ -11,5 +11,7 @@ namespace ClinAgendaDemo.src.Core.Interfaces
         Task<PatientListDTO> GetByIdAsync(int id);
         Task<IEnumerable<PatientListDTO>> GetAllAsync(PatientRequestDTO request);
         Task<int> InsertPatientAsync(PatientInsertDTO patientInsertDTO);
+        Task<int> UpdatePatientAsync(PatientDTO request);
+        Task<int> DeletePatientAsync(int id);
     }
 }

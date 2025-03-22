@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ClinAgenda.src.Application.DTOs.Status;
 using ClinAgendaDemo.src.Application.DTOs.Patient;
 using ClinAgendaDemo.src.Core.Interfaces;
@@ -115,6 +111,30 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
                 SELECT LAST_INSERT_ID();";
             
             return await _connection.ExecuteScalarAsync<int>(query, request);
+        }
+
+        public async Task<int> UpdatePatientAsync(PatientDTO request)
+        {
+            string query = @"
+            UPDATE patient
+                SET name = @Name,
+                phoneNumber = @PhoneNumber,
+                documentNumber = @DocumentNumber,
+                statusId = @StatusId,
+                birthDate = @BirthDate
+            WHERE id = @Id;
+            ";
+
+            return await _connection.ExecuteScalarAsync<int>(query, request);
+        }
+
+        public async Task<int> DeletePatientAsync(int id)
+        {
+            string query = @"
+            DELETE FROM patient WHERE id = @Id;
+            ";
+
+            return await _connection.ExecuteAsync(query, new { Id = id});
         }
     }
 }

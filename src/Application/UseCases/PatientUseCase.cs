@@ -30,5 +30,25 @@ namespace ClinAgendaDemo.src.Application.UseCases
         {
             return await _patientRepository.InsertPatientAsync(request);
         }
+
+        public async Task<int> UpdatePatient(int id, PatientInsertDTO request)
+        {
+            var patientUpdate = new PatientDTO()
+            {
+                Id = id,
+                Name = request.Name,
+                PhoneNumber = request.PhoneNumber,
+                DocumentNumber = request.DocumentNumber,
+                StatusId = request.StatusId,
+                BirthDate = request.BirthDate
+            };
+
+            return await _patientRepository.UpdatePatientAsync(patientUpdate);
+        }
+
+        public async Task<int> DeletePatient(int id)
+        {
+            return await _patientRepository.DeletePatientAsync(id);
+        }
     }
 }

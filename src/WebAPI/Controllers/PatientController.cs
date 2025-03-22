@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ClinAgendaDemo.src.Application.DTOs.Patient;
 using ClinAgendaDemo.src.Application.UseCases;
 using Microsoft.AspNetCore.Mvc;
+using Mysqlx.Crud;
 
 namespace ClinAgendaDemo.src.WebAPI.Controllers
 {
@@ -53,6 +54,34 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
             {
                 var response = await _patientUseCase.CreatePatient(request);
                 return Ok($"Paciente id: {response} criado com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdatePatientAsync(int id, [FromBody] PatientInsertDTO request)
+        {
+            try
+            {
+                var response = await _patientUseCase.UpdatePatient(id, request);
+                return StatusCode(201);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeletePatientAsync(int id)
+        {
+            try
+            {
+                var response = await _patientUseCase.DeletePatient(id);
+                return NoContent();
             }
             catch (Exception ex)
             {
