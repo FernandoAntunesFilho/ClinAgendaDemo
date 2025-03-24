@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ClinAgendaDemo.src.Application.DTOs.Patient;
+using ClinAgenda.src.Application.DTOs.Patient;
 
-namespace ClinAgendaDemo.src.Core.Interfaces
+namespace ClinAgenda.src.Core.Interfaces
 {
     public interface IPatientRepository
     {
-        Task<PatientListDTO?> GetByIdAsync(int id);
-        Task<IEnumerable<PatientListDTO>> GetAllAsync(PatientRequestDTO request);
-        Task<int> InsertPatientAsync(PatientInsertDTO patientInsertDTO);
-        Task<int> UpdatePatientAsync(PatientDTO request);
-        Task<int> DeletePatientAsync(int id);
+        Task<(int total, IEnumerable<PatientListDTO> patient)> GetPatientsAsync(string? name, string? documentNumber, int? statusId, int itemsPerPage, int page);
+        Task<int> InsertPatientAsync(PatientInsertDTO patient);
+        Task<PatientDTO?> GetByIdAsync(int id);
+        Task<bool> UpdateAsync(PatientDTO patient);
+        Task<int> DeleteByPatientIdAsync(int patientId);
     }
 }

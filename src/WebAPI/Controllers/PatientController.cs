@@ -2,90 +2,94 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ClinAgendaDemo.src.Application.DTOs.Patient;
-using ClinAgendaDemo.src.Application.UseCases;
+using ClinAgenda.src.Application.DTOs.Patient;
+using ClinAgenda.src.Application.UseCases;
+using ClinAgendaAPI.StatusUseCase;
 using Microsoft.AspNetCore.Mvc;
-using Mysqlx.Crud;
 
-namespace ClinAgendaDemo.src.WebAPI.Controllers
+namespace ClinAgenda.src.WebAPI.Controllers
 {
-    [ApiController]
-    [Route("api/patient")]
     public class PatientController : ControllerBase
     {
         private readonly PatientUseCase _patientUseCase;
-        public PatientController(PatientUseCase patientUseCase)
-        {
-            _patientUseCase = patientUseCase;
-        }
+        private readonly StatusUseCase _statusUseCase;
 
-        [HttpPost("list")]
-        public async Task<IActionResult> GetPatientAsync([FromBody] PatientRequestDTO request)
+        public PatientController(PatientUseCase patientService, StatusUseCase statusUseCase)
+        {
+            _patientUseCase = patientService;
+            _statusUseCase = statusUseCase;
+        }
+        [HttpGet("list")]
+        public async Task<IActionResult> GetPatientsAsync([FromQuery] string? name, [FromQuery] string? documentNumber, [FromQuery] int? statusId, [FromQuery] int itemsPerPage = 10, [FromQuery] int page = 1)
         {
             try
             {
-                var patients = await _patientUseCase.GetPatientsAsync(request);
-                return Ok(patients);
+                var result = await _patientUseCase.GetPatientsAsync(name, documentNumber, statusId, itemsPerPage, page);
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
             }
         }
-
-        [HttpGet("list/{id}")]
-        public async Task<IActionResult> GetPatientsByIdAsync(int id)
-        {
-            try
-            {
-                var patient = await _patientUseCase.GetPetientById(id);
-                return Ok(patient);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
-        }
-
         [HttpPost("insert")]
-        public async Task<IActionResult> CreatePatientAsync([FromBody] PatientInsertDTO request)
+        public async Task<IActionResult> CreateStatusAsync([FromBody] PatientInsertDTO patient)
         {
             try
             {
-                var response = await _patientUseCase.CreatePatient(request);
-                return Ok($"Paciente id: {response} criado com sucesso");
+                var hasStatus = await _statusUseCase.GetStatusByIdAsync(patient.StatusId);
+                if (hasStatus == null)
+                    return BadRequest($"O status ID {patient.StatusId} não existe");
+
+                var createdPatientId = await _patientUseCase.CreatePatientAsync(patient);
+
+                if (!(createdPatientId > 0))
+                {
+                    return StatusCode(500, "Erro ao criar a Paciente.");
+                }
+                var infosPatientCreated = await _patientUseCase.GetPatientByIdAsync(createdPatientId);
+
+                return Ok(infosPatientCreated);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+                return StatusCode(500, $"Erro interno do Servidor: {ex.Message}");
             }
         }
-
+        [HttpGet("listById/{id}")]
+        public async Task<IActionResult> GetPatientByIdAsync(int id)
+        {
+            try
+            {
+                var doctor = await _patientUseCase.GetPatientByIdAsync(id);
+                if (doctor == null) return NotFound();
+                return Ok(doctor);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do Servidor: {ex.Message}");
+            }
+        }
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdatePatientAsync(int id, [FromBody] PatientInsertDTO request)
+        public async Task<IActionResult> UpdateDoctorAsync(int id, [FromBody] PatientInsertDTO patient)
         {
             try
             {
-                var response = await _patientUseCase.UpdatePatient(id, request);
-                return StatusCode(201);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
-        }
+                if (patient == null) return BadRequest();
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeletePatientAsync(int id)
-        {
-            try
-            {
-                var response = await _patientUseCase.DeletePatient(id);
-                return NoContent();
+                var hasStatus = await _statusUseCase.GetStatusByIdAsync(patient.StatusId);
+                if (hasStatus == null)
+                    return BadRequest($"O status ID {patient.StatusId} não existe");
+
+                bool updated = await _patientUseCase.UpdatePatientAsync(id, patient);
+                if (!updated) return NotFound("Paciente não encontrado.");
+
+                var infosDoctorUpdate = await _patientUseCase.GetPatientByIdAsync(id);
+                return Ok(infosDoctorUpdate);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+                return StatusCode(500, $"Erro interno do Servidor: {ex.Message}");
             }
         }
     }
