@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ClinAgenda.src.Application.DTOs.Patient;
 using ClinAgenda.src.Application.UseCases;
 using ClinAgendaAPI.StatusUseCase;
@@ -9,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ClinAgenda.src.WebAPI.Controllers
 {
+    [ApiController]
+    [Route("api/patient")]
     public class PatientController : ControllerBase
     {
         private readonly PatientUseCase _patientUseCase;
