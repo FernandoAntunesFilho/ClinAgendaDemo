@@ -23,7 +23,7 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
 
             string queryDoctorSpecialty = @"
             INSERT INTO DOCTOR_SPECIALTY (DOCTORID, SPECIALTYID)
-            VALUES (@DOCTORID, @SPECIALTYID);";
+            VALUES (@DoctorId, @SpecialtyId);";
 
             var lastDoctorId = await _connection.ExecuteScalarAsync<int>(queryDoctor, doctor);
 
