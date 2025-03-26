@@ -96,7 +96,6 @@ namespace ClinAgendaDemo.src.Application.UseCases
 
             var isUpdated = await _doctorRepository.UpdateDoctorAsync(doctor);
             return isUpdated;
-            //TODO: Fazer Controller.
         }
     }
 }

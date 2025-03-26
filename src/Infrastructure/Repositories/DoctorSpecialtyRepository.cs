@@ -49,5 +49,18 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
 
             return 0;
         }
+
+        public async Task<bool> DeleteDoctorSpecialtyAsync(int doctorId)
+        {
+            var query = @"
+                DELETE FROM DOCTOR_SPECIALTY 
+                WHERE
+                    DOCTORID = @DoctorId;
+            ";
+
+            var rowsAffected = await _connection.ExecuteAsync(query, new { DoctorId = doctorId });
+
+            return rowsAffected > 0;
+        }
     }
 }

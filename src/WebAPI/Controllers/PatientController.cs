@@ -69,7 +69,7 @@ namespace ClinAgenda.src.WebAPI.Controllers
             }
         }
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateDoctorAsync(int id, [FromBody] PatientInsertDTO patient)
+        public async Task<IActionResult> UpdatePatientAsync(int id, [FromBody] PatientInsertDTO patient)
         {
             try
             {
@@ -82,8 +82,8 @@ namespace ClinAgenda.src.WebAPI.Controllers
                 bool updated = await _patientUseCase.UpdatePatientAsync(id, patient);
                 if (!updated) return NotFound("Paciente não encontrado.");
 
-                var infosDoctorUpdate = await _patientUseCase.GetPatientByIdAsync(id);
-                return Ok(infosDoctorUpdate);
+                var infosPatientUpdate = await _patientUseCase.GetPatientByIdAsync(id);
+                return Ok(infosPatientUpdate);
             }
             catch (Exception ex)
             {

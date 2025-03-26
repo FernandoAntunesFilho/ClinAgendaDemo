@@ -124,8 +124,20 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
 
             int rowsAffected = await _connection.ExecuteAsync(query, request);
 
-            return rowsAffected > 0;
-            //TODO: Fazer atualização das especialidades.
+            var doctorSpecialtyDeleted = await _doctorSpecialtyRepository.DeleteDoctorSpecialtyAsync(request.Id);
+            
+            if (doctorSpecialtyDeleted)
+            {
+                var doctorSpecialty = new DoctorSpecialtyInsertDTO
+                {
+                    DoctorId = request.Id,
+                    SpecialtiesIds = request.Specialties
+                };
+
+                await _doctorSpecialtyRepository.InsertDoctorSpecialtyAsync(doctorSpecialty);
+            }
+
+            return rowsAffected > 0;            
         }
     }
 }

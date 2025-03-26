@@ -1,4 +1,5 @@
 using ClinAgenda.src.Application.UseCases;
+using ClinAgendaAPI.StatusUseCase;
 using ClinAgendaDemo.src.Application.DTOs.Doctor;
 using ClinAgendaDemo.src.Application.UseCases;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,13 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
     {
         private readonly DoctorUseCase _doctorUseCase;
         private readonly SpecialtyUseCase _specialtyUseCase;
+        private readonly StatusUseCase _statusUseCase;
 
-        public DoctorController(DoctorUseCase doctorUseCase, SpecialtyUseCase specialtyUseCase)
+        public DoctorController(DoctorUseCase doctorUseCase, SpecialtyUseCase specialtyUseCase, StatusUseCase statusUseCase)
         {
             _doctorUseCase = doctorUseCase;
             _specialtyUseCase = specialtyUseCase;
+            _statusUseCase = statusUseCase;
         }
 
         [HttpGet("list/{id}")]
@@ -70,6 +73,28 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
                     return StatusCode(500, "Erro ao criar Doutor.");
 
                 return Ok(createdDoctor);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateDoctorAsync(int id, [FromBody] DoctorUpdateDTO request)
+        {
+            try
+            {
+                if (request == null) return BadRequest();
+                var hasStatus = await _statusUseCase.GetStatusByIdAsync(request.StatusId);
+                if (hasStatus == null)
+                    return BadRequest($"O status ID {request.StatusId} não existe");
+
+                bool updated = await _doctorUseCase.UpdateDoctorAsync(id, request);
+                if (!updated) return NotFound("Doutor não encontrado.");
+
+                var infosDoctorUpdate = await _doctorUseCase.GetDoctorByIdAsync(id);
+                return Ok(infosDoctorUpdate);
             }
             catch (Exception ex)
             {
