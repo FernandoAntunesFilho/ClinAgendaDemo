@@ -17,55 +17,70 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
             _doctorSpecialtyRepository = doctorSpecialtyRepository;
         }
 
-        public async Task<IEnumerable<DoctorListDTO>> GetDoctorAsync(
+        public async Task<(int total, IEnumerable<DoctorListDTO> doctors)> GetDoctorAsync(
             string? name,
             int? specialtyId,
             int? statusId,
-            int offset,
-            int itemsPerPage)
-            {
-                var innerJoins = new StringBuilder(@"
-                FROM DOCTOR D
+            int itemsPerPage,
+            int page)
+        {
+            var innerJoins = new StringBuilder(@"
+                 FROM DOCTOR D
                 INNER JOIN STATUS S ON D.STATUSID = S.ID
                 INNER JOIN DOCTOR_SPECIALTY DSPE ON DSPE.DOCTORID = D.ID
                 WHERE 1 = 1");
 
-                var parameters = new DynamicParameters();
+            var parameters = new DynamicParameters();
 
-                if (!string.IsNullOrEmpty(name))
-                {
-                    innerJoins.Append("AND D.NAME LIKE @Name");
-                    parameters.Add("Name", $"%{name}%");
-                }
-
-                if (specialtyId.HasValue)
-                {
-                    innerJoins.Append("AND DSPE.SPECIALTYID = @SpecialtyId");
-                    parameters.Add("SpecialtyId", specialtyId.Value);
-                }
-
-                if (statusId.HasValue)
-                {
-                    innerJoins.Append("AND S.ID = @StatusId");
-                    parameters.Add("StatusId", statusId.Value);
-                }
-
-                parameters.Add("LIMIT", itemsPerPage);
-                parameters.Add("PAGE", offset);
-
-                //TODO: Finalizar o método.
+            if (!string.IsNullOrEmpty(name))
+            {
+                innerJoins.Append(" AND D.NAME LIKE @Name");
+                parameters.Add("Name", $"%{name}%");
             }
+
+            if (specialtyId.HasValue)
+            {
+                innerJoins.Append(" AND DSPE.SPECIALTYID = @SpecialtyId");
+                parameters.Add("SpecialtyId", specialtyId.Value);
+            }
+
+            if (statusId.HasValue)
+            {
+                innerJoins.Append(" AND S.ID = @StatusId");
+                parameters.Add("StatusId", statusId.Value);
+            }
+
+            var countQuery = $"SELECT COUNT(DISTINCT D.ID) {innerJoins}";
+            int total = await _connection.ExecuteScalarAsync<int>(countQuery, parameters);
+
+            var dataQuery = $@"
+                    SELECT DISTINCT
+                        D.ID AS ID, 
+                        D.NAME AS NAME,
+                        D.STATUSID AS STATUSID,
+                        S.NAME AS STATUSNAME
+                    {innerJoins}
+                    ORDER BY D.ID
+                    LIMIT @Limit OFFSET @Offset";
+
+            parameters.Add("Limit", itemsPerPage);
+            parameters.Add("Offset", (page - 1) * itemsPerPage);
+
+            var doctors = await _connection.QueryAsync<DoctorListDTO>(dataQuery, parameters);
+
+            return (total, doctors);
+        }
 
         public async Task<int> InsertDoctorAsync(DoctorInsertDTO doctor)
         {
             string queryDoctor = @"
             INSERT INTO DOCTOR (NAME, STATUSID)
             VALUES (@Name, @StatusId);
-            SELECT LAST_INSERT_ID();";            
+            SELECT LAST_INSERT_ID();";
 
             var lastDoctorId = await _connection.ExecuteScalarAsync<int>(queryDoctor, doctor);
 
-            DoctorSpecialtyDTO doctorSpecialtyDTO = new()
+            DoctorSpecialtyInsertDTO doctorSpecialtyDTO = new()
             {
                 DoctorId = lastDoctorId,
                 SpecialtiesIds = doctor.Specialties

@@ -14,7 +14,28 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
             _connection = connection;
         }
 
-        public async Task<int> InsertDoctorSpecialtyAsync(DoctorSpecialtyDTO doctorSpecialty)
+        public async Task<IEnumerable<DoctorSpecialtyDTO>> GetDoctorSpecialtyByDoctorId(int[] doctorIds)
+        {
+            string query = @"
+            SELECT 
+                DS.DOCTORID AS DOCTORID,
+                DS.SPECIALTYID AS SPECIALTYID,
+                S.NAME AS SPECIALTYNAME,
+                S.SCHEDULEDURATION AS SCHEDULEDURATION
+            FROM
+                DOCTOR_SPECIALTY DS
+                    LEFT JOIN
+                SPECIALTY S ON S.ID = DS.SPECIALTYID
+            WHERE
+                DS.DOCTORID IN @DoctorIds
+            ORDER BY DS.DOCTORID;";
+
+            var result = await _connection.QueryAsync<DoctorSpecialtyDTO>(query, new { doctorIds });
+
+            return result;
+        }
+
+        public async Task<int> InsertDoctorSpecialtyAsync(DoctorSpecialtyInsertDTO doctorSpecialty)
         {
             string queryDoctorSpecialty = @"
             INSERT INTO DOCTOR_SPECIALTY (DOCTORID, SPECIALTYID)

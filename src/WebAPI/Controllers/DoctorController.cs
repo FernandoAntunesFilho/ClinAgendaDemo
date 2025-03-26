@@ -18,6 +18,25 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
             _specialtyUseCase = specialtyUseCase;
         }
 
+        [HttpGet("list")]
+        public async Task<IActionResult> GetDoctorssAsync(
+            [FromQuery] string? name,
+            [FromQuery] int? specialtyId,
+            [FromQuery] int? statusId,
+            [FromQuery] int itemsPerPage = 10,
+            [FromQuery] int page = 1)
+            {
+                try
+                {
+                    var result = await _doctorUseCase.GetDoctorsAsync(name, specialtyId, statusId, itemsPerPage, page);
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+                }
+            }
+
         [HttpPost("insert")]
         public async Task<IActionResult> CreateDoctorAsync([FromBody] DoctorInsertDTO doctor)
         {

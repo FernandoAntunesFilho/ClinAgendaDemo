@@ -2,7 +2,9 @@ namespace ClinAgendaDemo.src.Application.DTOs.Doctor
 {
     public class DoctorSpecialtyDTO
     {
-        public required int DoctorId { get; set; }
-        public required int[] SpecialtiesIds { get; set; }
+        public int DoctorId { get; set; }
+        public int SpecialtyId { get; set; }
+        public required string SpecialtyName { get; set; }
+        public required int ScheduleDuration { get; set; } = 1;
     }
 }
