@@ -14,5 +14,7 @@ namespace ClinAgendaDemo.src.Core.Interfaces
         Task<int> InsertDoctorAsync(DoctorInsertDTO doctor);
 
         Task<DoctorListDTO?> GetDoctorByIdAsync(int id);
+
+        Task<bool> UpdateDoctorAsync(DoctorDTO request);
     }
 }

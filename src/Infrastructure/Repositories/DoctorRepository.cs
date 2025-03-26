@@ -110,5 +110,22 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
 
             return lastDoctorId;
         }
+
+        public async Task<bool> UpdateDoctorAsync(DoctorDTO request)
+        {
+            var query = @"
+                UPDATE DOCTOR 
+                SET 
+                    NAME = @Name,
+                    STATUSID = @StatusId
+                WHERE
+                    id = @Id;
+            ";
+
+            int rowsAffected = await _connection.ExecuteAsync(query, request);
+
+            return rowsAffected > 0;
+            //TODO: Fazer atualização das especialidades.
+        }
     }
 }

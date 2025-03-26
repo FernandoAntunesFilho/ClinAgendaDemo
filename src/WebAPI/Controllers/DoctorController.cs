@@ -56,22 +56,25 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
         [HttpPost("insert")]
         public async Task<IActionResult> CreateDoctorAsync([FromBody] DoctorInsertDTO doctor)
         {
-            //TODO: Implementar try catch
-            foreach (var specialty in doctor.Specialties)
+            try
             {
-                var specialtyExists = await _specialtyUseCase.GetSpecialtyByIdAsync(specialty);
-                if (specialtyExists == null) return NotFound($"A especialidade com ID {specialty} não existe");
+                foreach (var specialty in doctor.Specialties)
+                {
+                    var specialtyExists = await _specialtyUseCase.GetSpecialtyByIdAsync(specialty);
+                    if (specialtyExists == null) return NotFound($"A especialidade com ID {specialty} não existe");
+                }
+
+                var createdDoctor = await _doctorUseCase.CreateDoctorAsync(doctor);
+
+                if (createdDoctor == null)
+                    return StatusCode(500, "Erro ao criar Doutor.");
+
+                return Ok(createdDoctor);
             }
-
-            var createdDoctorId = await _doctorUseCase.CreateDoctorAsync(doctor);
-
-            if (!(createdDoctorId > 0))
-                return StatusCode(500, "Erro ao criar Doutor.");
-
-            //var infosDoctorCreated = await _doctorUseCase.GetDoctorByIdAsync(createdDoctorId); --> Ativar quando existir o método
-            //return Ok(infosDoctorCreated);
-
-            return Ok($"Doutor ID {createdDoctorId} criado com sucesso!"); //Remover ao ativar as linhas acima.
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
         }
     }
 }

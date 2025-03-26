@@ -74,10 +74,29 @@ namespace ClinAgendaDemo.src.Application.UseCases
             return new { total, items = doctors };
         }
 
-        public async Task<int> CreateDoctorAsync(DoctorInsertDTO doctorDTO)
+        public async Task<DoctorListReturnDTO> CreateDoctorAsync(DoctorInsertDTO doctorDTO)
         {
             var newDoctorId = await _doctorRepository.InsertDoctorAsync(doctorDTO);
-            return newDoctorId;
+            var newDoctor = await GetDoctorByIdAsync(newDoctorId);
+            return newDoctor!;
+        }
+
+        public async Task<bool> UpdateDoctorAsync(int id, DoctorUpdateDTO request)
+        {
+            var exitingDoctor = _doctorRepository.GetDoctorByIdAsync(id);
+            if (exitingDoctor == null) throw new KeyNotFoundException("Doutor não encontrado.");
+
+            var doctor = new DoctorDTO
+            {
+                Id = id,
+                Name = request.Name,
+                Specialties = request.Specialties,
+                StatusId = request.StatusId
+            };
+
+            var isUpdated = await _doctorRepository.UpdateDoctorAsync(doctor);
+            return isUpdated;
+            //TODO: Fazer Controller.
         }
     }
 }
