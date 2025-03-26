@@ -17,6 +17,26 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
             _doctorSpecialtyRepository = doctorSpecialtyRepository;
         }
 
+        public async Task<DoctorListDTO?> GetDoctorByIdAsync(int id)
+        {
+            var query = @"
+                SELECT 
+                    D.ID AS ID,
+                    D.NAME AS NAME,
+                    D.STATUSID AS STATUSID,
+                    S.NAME AS STATUSNAME
+                FROM
+                    DOCTOR D
+                        INNER JOIN
+                    STATUS S ON S.ID = D.STATUSID
+                WHERE
+                    D.ID = @Id;";
+
+            var doctor = await _connection.QueryFirstOrDefaultAsync<DoctorListDTO>(query, new { id });
+
+            return doctor;
+        }
+
         public async Task<(int total, IEnumerable<DoctorListDTO> doctors)> GetDoctorAsync(
             string? name,
             int? specialtyId,

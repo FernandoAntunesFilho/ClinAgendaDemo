@@ -14,7 +14,7 @@ namespace ClinAgenda.src.Infrastructure.Repositories
         {
             _connection = connection;
         }
-        public async Task<SpecialtyDTO> GetByIdAsync(int id)
+        public async Task<SpecialtyDTO?> GetByIdAsync(int id)
         {
             const string query = @"
                 SELECT 

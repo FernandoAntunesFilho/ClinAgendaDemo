@@ -18,7 +18,7 @@ namespace ClinAgenda.src.Infrastructure.Repositories
         }
 
         // Método assíncrono para buscar um status pelo ID.
-        public async Task<StatusDTO> GetByIdAsync(int id)
+        public async Task<StatusDTO?> GetByIdAsync(int id)
         {
             // Query SQL para selecionar o status pelo ID.
             string query = @"

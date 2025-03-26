@@ -18,6 +18,22 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
             _specialtyUseCase = specialtyUseCase;
         }
 
+        [HttpGet("list/{id}")]
+        public async Task<IActionResult> GetDoctorByIdAsync(int id)
+        {
+            try
+            {
+                var response = await _doctorUseCase.GetDoctorByIdAsync(id);
+                if (response == null) return NotFound($"Doutor com ID {id} não encontrado.");
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
+
         [HttpGet("list")]
         public async Task<IActionResult> GetDoctorssAsync(
             [FromQuery] string? name,
@@ -25,17 +41,17 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
             [FromQuery] int? statusId,
             [FromQuery] int itemsPerPage = 10,
             [FromQuery] int page = 1)
+        {
+            try
             {
-                try
-                {
-                    var result = await _doctorUseCase.GetDoctorsAsync(name, specialtyId, statusId, itemsPerPage, page);
-                    return Ok(result);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-                }
+                var result = await _doctorUseCase.GetDoctorsAsync(name, specialtyId, statusId, itemsPerPage, page);
+                return Ok(result);
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
 
         [HttpPost("insert")]
         public async Task<IActionResult> CreateDoctorAsync([FromBody] DoctorInsertDTO doctor)
