@@ -23,6 +23,7 @@ builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+builder.Services.AddScoped<IDoctorSpecialtyRepository, DoctorSpecialtyRepository>();
 builder.Services.AddScoped<StatusUseCase>();
 builder.Services.AddScoped<SpecialtyUseCase>();
 builder.Services.AddScoped<PatientUseCase>();

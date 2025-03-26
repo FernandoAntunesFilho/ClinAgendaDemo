@@ -4,6 +4,13 @@ namespace ClinAgendaDemo.src.Core.Interfaces
 {
     public interface IDoctorRepository
     {
+        Task<IEnumerable<DoctorListDTO>> GetDoctorAsync(
+            string? name,
+            int? specialtyId,
+            int? statusId,
+            int itemsPerPage,
+            int page);
+            
         Task<int> InsertDoctorAsync(DoctorInsertDTO doctor);
     }
 }
