@@ -24,10 +24,12 @@ builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IDoctorSpecialtyRepository, DoctorSpecialtyRepository>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<StatusUseCase>();
 builder.Services.AddScoped<SpecialtyUseCase>();
 builder.Services.AddScoped<PatientUseCase>();
 builder.Services.AddScoped<DoctorUseCase>();
+builder.Services.AddScoped<AppointmentUseCase>();
 
 
 var app = builder.Build();
