@@ -14,19 +14,34 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
             _connection = connection;
         }
 
+        //TODO: GetAll & GetById
+
         public async Task<int> InsertAppointmentAsync(AppointmentInsertDTO appointment)
         {
             var query = @"
             INSERT INTO APPOINTMENT (PATIENTID, DOCTORID, SPECIALTYID, APPOINTMENTDATE, OBSERVATION)
-            VALUES (@PatientId, @DoctorId, @SpecialtyId, @ScheduleDate, @Observation);
+            VALUES (@PatientId, @DoctorId, @SpecialtyId, @AppointmentDate, @Observation);
             SELECT LAST_INSERT_ID();
             ";
             return await _connection.ExecuteScalarAsync<int>(query, appointment);
         }
 
-        public Task<bool> UpdateAppointmentAsync(AppointmentUpdateDTO appointment)
+        public async Task<bool> UpdateAppointmentAsync(AppointmentDTO appointment)
         {
-            throw new NotImplementedException();
+            var query = @"
+                UPDATE APPOINTMENT 
+                SET 
+                    PATIENTID = @PatientId,
+                    DOCTORID = @DoctorId,
+                    SPECIALTYID = @SpecialtyId,
+                    APPOINTMENTDATE = @AppointmentDate,
+                    OBSERVATION = @Observation
+                WHERE
+                    ID = @Id;
+            ";
+            var linhasAfetadas = await _connection.ExecuteAsync(query, appointment);
+
+            return linhasAfetadas > 0;
         }
     }
 }

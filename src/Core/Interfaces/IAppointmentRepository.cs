@@ -5,6 +5,6 @@ namespace ClinAgendaDemo.src.Core.Interfaces
     public interface IAppointmentRepository
     {
         Task<int> InsertAppointmentAsync(AppointmentInsertDTO appointment);
-        Task<bool> UpdateAppointmentAsync(AppointmentUpdateDTO appointment);
+        Task<bool> UpdateAppointmentAsync(AppointmentDTO appointment);
     }
 }
