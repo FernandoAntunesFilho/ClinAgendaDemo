@@ -81,5 +81,21 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
                 return StatusCode(500, $"Erro interno do Servidor: {ex.Message}");
             }
         }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteAppointment(int id)
+        {
+            try
+            {
+                var appointmentDeleted = await _appointmentUseCase.Delete(id);
+                if (!appointmentDeleted) return NotFound($"Erro ao apagar o agendamento {id}.");
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do Servidor: {ex.Message}");
+            }
+        }
     }
 }

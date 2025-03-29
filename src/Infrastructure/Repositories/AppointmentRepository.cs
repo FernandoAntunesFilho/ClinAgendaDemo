@@ -30,7 +30,7 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
                 WHERE
                     ID = @Id;";
 
-            var appointment = await _connection.QueryFirstOrDefaultAsync<AppointmentDTO>(query, new { Id = id});
+            var appointment = await _connection.QueryFirstOrDefaultAsync<AppointmentDTO>(query, new { Id = id });
 
             return appointment;
         }
@@ -120,6 +120,18 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
             var linhasAfetadas = await _connection.ExecuteAsync(query, appointment);
 
             return linhasAfetadas > 0;
+        }
+
+        public async Task<bool> DeleteAppointmentAsync(int id)
+        {
+            var query = @"
+                DELETE FROM appointment 
+                WHERE
+                    ID = @Id;";
+
+            var rowsAffected = await _connection.ExecuteAsync(query, new { Id = id });
+
+            return rowsAffected > 0;
         }
     }
 }

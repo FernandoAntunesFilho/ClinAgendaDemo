@@ -9,5 +9,6 @@ namespace ClinAgendaDemo.src.Core.Interfaces
         Task<(int total, IEnumerable<AppointmentListDTO>)> GetAppointmentsAsync(
             string? patientName, string? doctorName, int? specialtyId, int itemsPerPage, int page);
         Task<AppointmentDTO?> GetAppointmentByIdAsync(int id);
+        Task<bool> DeleteAppointmentAsync(int id);
     }
 }

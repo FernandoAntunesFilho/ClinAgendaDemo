@@ -100,5 +100,10 @@ namespace ClinAgendaDemo.src.Application.UseCases
 
             return appointmentUpdated;
         }
+
+        public async Task<bool> Delete(int id)
+        {
+            return await _appointmentRepository.DeleteAppointmentAsync(id);
+        }
     }
 }
