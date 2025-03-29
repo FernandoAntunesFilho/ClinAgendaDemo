@@ -10,11 +10,16 @@ namespace ClinAgendaDemo.src.Application.UseCases
     {
         private readonly IDoctorRepository _doctorRepository;
         private readonly IDoctorSpecialtyRepository _doctorSpecialtyRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
 
-        public DoctorUseCase(IDoctorRepository doctorRepository, IDoctorSpecialtyRepository doctorSpecialtyRepository)
+        public DoctorUseCase(
+            IDoctorRepository doctorRepository,
+            IDoctorSpecialtyRepository doctorSpecialtyRepository,
+            IAppointmentRepository appointmentRepository)
         {
             _doctorRepository = doctorRepository;
             _doctorSpecialtyRepository = doctorSpecialtyRepository;
+            _appointmentRepository = appointmentRepository;
         }
 
         public async Task<DoctorListReturnDTO?> GetDoctorByIdAsync(int id)
@@ -96,6 +101,18 @@ namespace ClinAgendaDemo.src.Application.UseCases
 
             var isUpdated = await _doctorRepository.UpdateDoctorAsync(doctor);
             return isUpdated;
+        }
+
+        public async Task<bool> DeleteDoctorAsync(int id)
+        {
+            var exitingDoctor = await _doctorRepository.GetDoctorByIdAsync(id);
+            if (exitingDoctor == null) throw new KeyNotFoundException("Doutor não encontrado.");
+
+            var (_, rawData) = await _appointmentRepository.GetAppointmentsAsync(null, doctorName: exitingDoctor.Name, null, 10, 1);
+            if (rawData.Any()) throw new InvalidOperationException("Não é possível excluir o médico, pois existem agendamentos relacionados.");
+
+            var isDeleted = await _doctorRepository.DeleteDoctorAsync(id);
+            return isDeleted;
         }
     }
 }

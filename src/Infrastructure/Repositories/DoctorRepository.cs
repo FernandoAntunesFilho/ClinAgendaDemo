@@ -125,7 +125,7 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
             int rowsAffected = await _connection.ExecuteAsync(query, request);
 
             var doctorSpecialtyDeleted = await _doctorSpecialtyRepository.DeleteDoctorSpecialtyAsync(request.Id);
-            
+
             if (doctorSpecialtyDeleted)
             {
                 var doctorSpecialty = new DoctorSpecialtyInsertDTO
@@ -137,7 +137,20 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
                 await _doctorSpecialtyRepository.InsertDoctorSpecialtyAsync(doctorSpecialty);
             }
 
-            return rowsAffected > 0;            
+            return rowsAffected > 0;
         }
+
+        public async Task<bool> DeleteDoctorAsync(int id)
+        {
+            var query = @"
+                DELETE FROM DOCTOR 
+                WHERE ID = @Id;";
+
+            var rowsAffected = await _connection.ExecuteAsync(query, new { Id = id });
+
+            return rowsAffected > 0;
+        }
+
+        //TODO: Deletar Paciente.
     }
 }

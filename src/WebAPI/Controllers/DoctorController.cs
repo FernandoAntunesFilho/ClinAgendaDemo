@@ -101,5 +101,21 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
                 return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
             }
         }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteDoctorAsync(int id)
+        {
+            try
+            {
+                var deleted = await _doctorUseCase.DeleteDoctorAsync(id);
+                if (!deleted) return NotFound("Doutor não encontrado.");
+
+                return Ok("Doutor excluído com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
+            }
+        }
     }
 }
