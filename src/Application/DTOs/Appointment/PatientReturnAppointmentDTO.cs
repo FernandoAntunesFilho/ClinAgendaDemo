@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace ClinAgendaDemo.src.Application.DTOs.Appointment
 {
     public class PatientReturnAppointmentDTO
     {
-        
+        public required string Name { get; set; }
+        public required string DocumentNumber { get; set; }
     }
 }

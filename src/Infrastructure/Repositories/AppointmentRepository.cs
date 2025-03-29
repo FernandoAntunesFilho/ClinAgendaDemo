@@ -15,7 +15,26 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
             _connection = connection;
         }
 
-        //TODO: GetById
+        public async Task<AppointmentDTO?> GetAppointmentByIdAsync(int id)
+        {
+            var query = @"
+                SELECT 
+                    ID,
+                    PATIENTID,
+                    DOCTORID,
+                    SPECIALTYID,
+                    APPOINTMENTDATE,
+                    OBSERVATION
+                FROM
+                    APPOINTMENT
+                WHERE
+                    ID = @Id;";
+
+            var appointment = await _connection.QueryFirstOrDefaultAsync<AppointmentDTO>(query, new { Id = id});
+
+            return appointment;
+        }
+
         public async Task<(int total, IEnumerable<AppointmentListDTO>)> GetAppointmentsAsync(
             string? patientName, string? doctorName, int? specialtyId, int itemsPerPage, int page)
         {
@@ -47,7 +66,7 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
             if (specialtyId.HasValue)
             {
                 innerJoins.Append(" AND S.ID = @SpecialtyId");
-                parameters.Add("SpecialtyId", $"%{specialtyId}%");
+                parameters.Add("SpecialtyId", $"{specialtyId}");
             }
 
             var countQuery = $"SELECT COUNT(DISTINCT D.ID) {innerJoins}";

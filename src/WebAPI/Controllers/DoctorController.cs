@@ -21,7 +21,7 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
             _statusUseCase = statusUseCase;
         }
 
-        [HttpGet("list/{id}")]
+        [HttpGet("listById/{id}")]
         public async Task<IActionResult> GetDoctorByIdAsync(int id)
         {
             try

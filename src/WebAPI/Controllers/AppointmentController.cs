@@ -50,5 +50,36 @@ namespace ClinAgendaDemo.src.WebAPI.Controllers
                 return StatusCode(500, $"Erro interno do Servidor: {ex.Message}");
             }
         }
+
+        [HttpGet("list")]
+        public async Task<IActionResult> GetAppointments(
+            string? patientName, string? doctorName, int? specialtyId, int itemsPerPage = 10, int page = 1)
+        {
+            try
+            {
+                var result = await _appointmentUseCase.GetAll(patientName, doctorName, specialtyId, itemsPerPage, page);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do Servidor: {ex.Message}");
+            }
+        }
+
+        [HttpGet("listById/{id}")]
+        public async Task<IActionResult> GetAppointmentById(int id)
+        {
+            try
+            {
+                var response = await _appointmentUseCase.GetPatientByIdAsync(id);
+                if (response == null) return NotFound($"Appointment com ID {id} não encontrado.");
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro interno do Servidor: {ex.Message}");
+            }
+        }
     }
 }

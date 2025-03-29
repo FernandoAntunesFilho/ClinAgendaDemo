@@ -1,3 +1,4 @@
+using ClinAgenda.src.Application.DTOs.Specialty;
 using ClinAgenda.src.Application.UseCases;
 using ClinAgendaDemo.src.Application.DTOs.Appointment;
 using ClinAgendaDemo.src.Core.Interfaces;
@@ -21,6 +22,42 @@ namespace ClinAgendaDemo.src.Application.UseCases
             _patientUseCase = patientUseCase;
             _doctorUseCase = doctorUseCase;
             _specialtyUseCase = specialtyUseCase;
+        }
+
+        public async Task<object> GetAll(
+            string? patientName, string? doctorName, int? specialtyId, int itemsPerPage, int page)
+        {
+            var (total, rawData) = await _appointmentRepository.GetAppointmentsAsync(
+                patientName, doctorName, specialtyId, itemsPerPage, page
+            );
+
+            var appointments = rawData.Select(a => new AppointmentListReturnDTO
+            {
+                Id = a.Id,
+                Patient = new PatientReturnAppointmentDTO
+                {
+                    Name = a.PatientName,
+                    DocumentNumber = a.DoctorName
+                },
+                Doctor = new DoctorReturnAppointmentDTO
+                {
+                    Name = a.DoctorName
+                },
+                Specialty = new SpecialtyDTO
+                {
+                    Id = a.SpecialtyId,
+                    Name = a.SpecialtyName,
+                    ScheduleDuration = a.ScheduleDuration
+                },
+                AppointmentDate = a.ScheduleDate
+            }).ToList();
+
+            return new { total, items = appointments };
+        }
+
+        public async Task<AppointmentDTO?> GetPatientByIdAsync(int id)
+        {
+            return await _appointmentRepository.GetAppointmentByIdAsync(id);
         }
 
         public async Task<int> Create(AppointmentInsertDTO appointment)
