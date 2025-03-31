@@ -8,6 +8,6 @@ namespace ClinAgenda.src.Core.Interfaces
         Task<int> InsertPatientAsync(PatientInsertDTO patient);
         Task<PatientDTO?> GetByIdAsync(int id);
         Task<bool> UpdateAsync(PatientDTO patient);
-        Task<int> DeleteByPatientIdAsync(int patientId);
+        Task<bool> DeleteByPatientIdAsync(int patientId);
     }
 }

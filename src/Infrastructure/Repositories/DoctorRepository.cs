@@ -150,7 +150,5 @@ namespace ClinAgendaDemo.src.Infrastructure.Repositories
 
             return rowsAffected > 0;
         }
-
-        //TODO: Deletar Paciente.
     }
 }

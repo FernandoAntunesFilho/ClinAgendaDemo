@@ -103,7 +103,7 @@ namespace ClinAgenda.src.Infrastructure.Repositories
             int rowsAffected = await _connection.ExecuteAsync(query, patient);
             return rowsAffected > 0;
         }
-        public async Task<int> DeleteByPatientIdAsync(int id)
+        public async Task<bool> DeleteByPatientIdAsync(int id)
         {
             string query = "DELETE FROM Patient WHERE ID = @Id";
 
@@ -111,7 +111,7 @@ namespace ClinAgenda.src.Infrastructure.Repositories
 
             var rowsAffected = await _connection.ExecuteAsync(query, parameters);
 
-            return rowsAffected;
+            return rowsAffected > 0;
         }
     }
 }

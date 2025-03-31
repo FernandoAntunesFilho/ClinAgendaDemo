@@ -1,14 +1,18 @@
 using ClinAgenda.src.Application.DTOs.Patient;
 using ClinAgenda.src.Application.DTOs.Status;
 using ClinAgenda.src.Core.Interfaces;
+using ClinAgendaDemo.src.Core.Interfaces;
 
 namespace ClinAgenda.src.Application.UseCases
 {
     public class PatientUseCase
     {
         private readonly IPatientRepository _patientRepository;
-        public PatientUseCase(IPatientRepository patientRepository)
+        private readonly IAppointmentRepository _appointmentRepository;
+
+        public PatientUseCase(IPatientRepository patientRepository, IAppointmentRepository appointmentRepository)
         {
+            _appointmentRepository = appointmentRepository;        
             _patientRepository = patientRepository;
         }
         public async Task<object> GetPatientsAsync(string? name, string? documentNumber, int? statusId, int itemsPerPage, int page)
@@ -63,6 +67,29 @@ namespace ClinAgenda.src.Application.UseCases
             var isUpdated = await _patientRepository.UpdateAsync(updatedPatient);
 
             return isUpdated;
+        }
+
+        public async Task<bool> DeletePatientAsync(int id)
+        {
+            var existingPatient = await _patientRepository.GetByIdAsync(id);
+            if (existingPatient == null)
+            {
+                throw new KeyNotFoundException("Paciente não encontrado.");
+            }
+
+            var (_, rawData) = await _appointmentRepository.GetAppointmentsAsync(existingPatient.Name, null, null, 10, 1);
+            if (rawData != null && rawData.Count() > 0)
+            {
+                throw new Exception("Não é possível excluir o paciente, pois ele possui agendamentos.");
+            }
+
+            var isDeleted = await _patientRepository.DeleteByPatientIdAsync(id);
+            if (!isDeleted)
+            {
+                throw new Exception("Erro ao deletar o paciente.");
+            }
+
+            return isDeleted;
         }
     }
 }
